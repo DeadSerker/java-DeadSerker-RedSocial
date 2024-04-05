@@ -65,7 +65,7 @@ public class Main {
                 cargarUsuarios();
                 System.out.println("Introduce tu nombre para iniciar sesion");
                 String nombre = scanner.nextLine();
-                if (inicioSesion(nombre)) System.out.println("Sesion correcta");
+                if (inicioSesion(nombre));
                 else {
                     String respuesta;
                     do {
@@ -75,6 +75,7 @@ public class Main {
                     if (respuesta.equalsIgnoreCase("si")) {
                         registrarUsuario(nombre);
                         System.out.println("Usuario registrado correctamente");
+                        cargarUsuarios();
                         inicioSesion(nombre);
                     } else System.out.println("Saliendo...");
                 }
@@ -96,13 +97,12 @@ public class Main {
     }
 
     private static boolean inicioSesion(String nombre) {
-        Node usuariosList = (Element) documento.getElementsByTagName("Usuarios").item(0);
-        NodeList listaUsuarios = usuariosList.getChildNodes();
+        NodeList listaUsuarios = documento.getElementsByTagName("Usuario");
         String buscarNombre;
         boolean inicioCorrecto = true;
 
         for (int i = 0; i < listaUsuarios.getLength(); i++) {
-            Element usuarioElement = (Element) listaUsuarios.item(1);
+            Element usuarioElement = (Element) listaUsuarios.item(i);
             buscarNombre = usuarioElement.getAttribute("nombre");
             //Si encuentra el usuario...
             if (buscarNombre.equalsIgnoreCase(nombre)) {
@@ -155,11 +155,15 @@ public class Main {
                     "\n2-Ver Posts propios" +
                     "\n3-Ver todos los posts" +
                     "\n4-Ver todos los usuarios" +
-                    "\n5-Crear" +
-                    "\n6-Eliminar" +
+                    "\n5-Añadir/Seguir" +
+                    "\n6-Eliminar/Dejar de seguir" +
                     "\n7-Salir\n" +
                     "++++++++++++++++++++++++++++++\n");
-            opcion = Integer.parseInt(scanner.nextLine());
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+            }catch (NumberFormatException e){
+                opcion = 100;
+            }
 
             switch (opcion) {
                 case 1:
@@ -208,7 +212,11 @@ public class Main {
         int opcion;
         do {
             System.out.println("1-Seguir usuario\n2-Añadir Post\n-3 Salir");
-            opcion = Integer.parseInt(scanner.nextLine());
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+            }catch (NumberFormatException e){
+                opcion = 6;
+            }
             switch (opcion) {
                 case 1:
                     System.out.println("A quien quieres seguir?");
@@ -223,7 +231,6 @@ public class Main {
                         }
                     }
                     if (existe){
-                        System.out.println("Siguiendo a " + nombrePersona);
                         usuarioActual.seguirUsuario(nombrePersona);
                         NodeList usuarios = documento.getElementsByTagName("Usuario");
                         for (int i = 0; i < usuarios.getLength(); i++) {
@@ -231,9 +238,11 @@ public class Main {
                            if (usuario.getAttribute("nombre").equalsIgnoreCase(usuarioActual.getNombre())){
                                Element nuevoSeguido = documento.createElement("UsuarioSeguido");
                                nuevoSeguido.setAttribute("nombre", nombrePersona);
+                               usuario.appendChild(nuevoSeguido);
                            }
                         }
-                    }
+                        trasformerAux();
+                    }else System.out.println("El usuario que buscas no existe");
                     break;
                 case 2:
                     System.out.println("Escribe el titulo del post a crear");
@@ -252,8 +261,9 @@ public class Main {
                     break;
                 case 3:
                     System.out.println("Saliendo");
-                    menuPrincipal();
                     break;
+                default:
+                    System.out.println("Opcion no valida");
             }
 
         } while (opcion != 3);
