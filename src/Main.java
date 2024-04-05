@@ -104,12 +104,14 @@ public class Main {
                 Element usuariosSeguidos =(Element) elementUsuarioActual.getElementsByTagName("UsuariosSeguidos").item(0);
 
                 if (usuariosSeguidos != null) {
-                    NodeList usuariosSeguidosList = usuariosSeguidos.getChildNodes();
+                    NodeList usuariosSeguidosList = usuariosSeguidos.getElementsByTagName("UsuarioSeguido");
                     List<String> usuariosSeguidosAux = new ArrayList<>();
                     for (int j = 0; j < usuariosSeguidosList.getLength(); j++) {
-                        Element usuarioSeguido = (Element) usuariosSeguidosList.item(i);
-                        String nomUsuario = usuarioSeguido.getAttribute("nombre");
-                        if (!usuariosSeguidosAux.contains(usuariosSeguidosAux.add(nomUsuario)))usuariosSeguidosAux.add(nomUsuario);;
+                        Element usuarioSeguido = (Element) usuariosSeguidosList.item(j);
+                        if (usuarioSeguido!=null){
+                            String nomUsuario = usuarioSeguido.getAttribute("nombre");
+                            if (!usuariosSeguidosAux.contains(nomUsuario))usuariosSeguidosAux.add(nomUsuario);
+                        }
                     }
                     usuarioActual.setUsuariosSeguidos(usuariosSeguidosAux);
                 }
@@ -125,7 +127,7 @@ public class Main {
                         NodeList comentarios = postElement.getElementsByTagName("Comentario");
                         List<Comentario> comentariosUsuario = new ArrayList<>();
                         for (int k = 0; k <comentarios.getLength() ; k++) {
-                            Element comentarioElement = (Element) comentarios.item(i);
+                            Element comentarioElement = (Element) comentarios.item(k);
                             comentariosUsuario.add(new Comentario(comentarioElement.getTextContent()
                                     ,fechaFormateada(comentarioElement.getAttribute("fecha"))
                                     ,new Usuario(comentarioElement.getAttribute("usuario"))));
