@@ -2,6 +2,7 @@ import jdk.dynalink.beans.StaticClass;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.xml.crypto.Data;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,10 +29,12 @@ public class Main {
     private static List<Usuario> usuariosAplicacion;
     private static Usuario usuarioActual;
     private static List<Post> postAplicacion;
+    private static int indice;
 
     public static void main(String[] args) {
         usuariosAplicacion = new ArrayList<>();
         postAplicacion = new ArrayList<>();
+        indice = 0;
         boolean nueva = false;
         //String usuarioName = scanner.nextLine();
         if (cargarXML()) System.out.println("Datos cargados correctamente");
@@ -63,17 +66,17 @@ public class Main {
                 System.out.println("Introduce tu nombre para iniciar sesion");
                 String nombre = scanner.nextLine();
                 if (inicioSesion(nombre)) System.out.println("Sesion correcta");
-                else{
+                else {
                     String respuesta;
                     do {
                         System.out.println("¿No se encuentra el usuario, quieres registrate? (Si/No)");
                         respuesta = scanner.nextLine();
-                    }while (!(respuesta.equalsIgnoreCase("si") || respuesta.equalsIgnoreCase("no")));
-                    if (respuesta.equalsIgnoreCase("si")){
+                    } while (!(respuesta.equalsIgnoreCase("si") || respuesta.equalsIgnoreCase("no")));
+                    if (respuesta.equalsIgnoreCase("si")) {
                         registrarUsuario(nombre);
                         System.out.println("Usuario registrado correctamente");
                         inicioSesion(nombre);
-                    }else System.out.println("Saliendo...");
+                    } else System.out.println("Saliendo...");
                 }
 
             } catch (XPathExpressionException e) {
@@ -82,58 +85,59 @@ public class Main {
         }
 
     }
-    private static void cargarPostAplicacion(){
+
+    private static void cargarPostAplicacion() {
         NodeList posts = documento.getElementsByTagName("Post");
-        if (posts!=null){
-            for (int i = 0; i < posts.getLength(); i++) {
-                Element post = (Element) posts.item(i);
-                System.out.printf("Titulo del post: %S\nContenido:\n%S",post.getAttribute("titulo"));
-            }
-        }else{
-            System.out.println("No hay posts para mostrar");
+        for (int i = 0; i < posts.getLength(); i++) {
+            Element post = (Element) posts.item(i);
+            System.out.printf("Titulo del post: %S\nContenido:\n%S", post.getAttribute("titulo"), post.getTextContent());
         }
+
     }
+
     private static boolean inicioSesion(String nombre) {
         Node usuariosList = (Element) documento.getElementsByTagName("Usuarios").item(0);
         NodeList listaUsuarios = usuariosList.getChildNodes();
         String buscarNombre;
         boolean inicioCorrecto = true;
 
-            for (int i = 0; i < listaUsuarios.getLength(); i++) {
-                Element usuarioElement = (Element) listaUsuarios.item(1);
-                buscarNombre = usuarioElement.getAttribute("nombre");
-                //Si encuentra el usuario...
-                if (buscarNombre.equalsIgnoreCase(nombre)) {
-                    Node usuario = listaUsuarios.item(0);
-                    inicioCorrecto = true;
-                    usuarioActual = new Usuario(nombre);
-                    //Cargo los seguidos
-                    Node usuariosSeguidos = usuario.getChildNodes().item(0);
+        for (int i = 0; i < listaUsuarios.getLength(); i++) {
+            Element usuarioElement = (Element) listaUsuarios.item(1);
+            buscarNombre = usuarioElement.getAttribute("nombre");
+            //Si encuentra el usuario...
+            if (buscarNombre.equalsIgnoreCase(nombre)) {
+                Node usuario = listaUsuarios.item(0);
+                inicioCorrecto = true;
+                usuarioActual = new Usuario(nombre);
+                //Cargo los seguidos
+                Node usuariosSeguidos = usuario.getChildNodes().item(0);
 
-                    if (usuariosSeguidos!=null){
-                        NodeList usuariosSeguidosList = usuariosSeguidos.getChildNodes();
-                        for (int j = 0; j < usuariosSeguidosList.getLength(); j++) {
-                            usuarioActual.seguirUsuario(usuariosSeguidos.getChildNodes().item(i).getTextContent());
-                        }
+                if (usuariosSeguidos != null) {
+                    NodeList usuariosSeguidosList = usuariosSeguidos.getChildNodes();
+                    for (int j = 0; j < usuariosSeguidosList.getLength(); j++) {
+                        usuarioActual.seguirUsuario(usuariosSeguidos.getChildNodes().item(i).getTextContent());
                     }
+                }
 
-                    Node postPropios = usuario.getChildNodes().item(1);
-                    if (postPropios!=null){
-                        NodeList postPropiosList = postPropios.getChildNodes();
-                        for (int j = 0; j < postPropiosList.getLength(); j++) {
-                            Node postNode = postPropios.getChildNodes().item(i);
-                            Post post = new Post();
-                            post.setTitulo(postNode.getAttributes().getNamedItem("titulo").getTextContent());
-                            post.setFecha(fechaFormateada(postNode.getAttributes().getNamedItem("fecha").getTextContent()));
-                            //Faltan los comentarios--------------------
-                        }
+                Node postPropios = usuario.getChildNodes().item(1);
+                if (postPropios != null) {
+                    NodeList postPropiosList = postPropios.getChildNodes();
+                    for (int j = 0; j < postPropiosList.getLength(); j++) {
+                        Node postNode = postPropios.getChildNodes().item(i);
+                        Post post = new Post();
+                        post.setTitulo(postNode.getAttributes().getNamedItem("titulo").getTextContent());
+                        post.setFecha(fechaFormateada(postNode.getAttributes().getNamedItem("fecha").getTextContent()));
+                        //Faltan los comentarios--------------------
+
                     }
-                    break;
-                } else inicioCorrecto = false;
-            }
+                }
+                break;
+            } else inicioCorrecto = false;
+        }
 
 
         if (inicioCorrecto) {
+
             System.out.println("Bienvenido: " + nombre);
             menuPrincipal();
             return true;
@@ -151,7 +155,9 @@ public class Main {
                     "\n2-Ver Posts propios" +
                     "\n3-Ver todos los posts" +
                     "\n4-Ver todos los usuarios" +
-                    "\n5-Salir\n" +
+                    "\n5-Crear" +
+                    "\n6-Eliminar" +
+                    "\n7-Salir\n" +
                     "++++++++++++++++++++++++++++++\n");
             opcion = Integer.parseInt(scanner.nextLine());
 
@@ -167,7 +173,8 @@ public class Main {
                     usuarioActual.listarMisPosts();
                     break;
                 case 3:
-
+                    System.out.println("Mostrando posts de la aplicacion");
+                    cargarPostAplicacion();
                     break;
                 case 4:
                     System.out.println("Usuarios de la aplicacion");
@@ -181,12 +188,79 @@ public class Main {
                     }
                     break;
                 case 5:
+                    System.out.println("Que quieres añadir?");
+                    menuCrear();
+                    break;
+                case 6:
+                    System.out.println("Que quieres eliminar?");
+                    menuEliminar();
+                    break;
+                case 7:
                     System.out.println("Saliendo...");
                     break;
                 default:
                     System.out.println("Elige una opcion valida");
             }
-        } while (opcion != 5);
+        } while (opcion != 7);
+    }
+
+    private static void menuCrear() {
+        int opcion;
+        do {
+            System.out.println("1-Seguir usuario\n2-Añadir Post\n-3 Salir");
+            opcion = Integer.parseInt(scanner.nextLine());
+            switch (opcion) {
+                case 1:
+                    System.out.println("A quien quieres seguir?");
+                    String nombrePersona = scanner.nextLine();
+                    boolean existe = false;
+                    for (Usuario usuario : usuariosAplicacion) {
+                        if (usuario.getNombre().equalsIgnoreCase(nombrePersona)){
+                            existe = true;
+                            break;
+                        }else{
+                            existe = false;
+                        }
+                    }
+                    if (existe){
+                        System.out.println("Siguiendo a " + nombrePersona);
+                        usuarioActual.seguirUsuario(nombrePersona);
+                        NodeList usuarios = documento.getElementsByTagName("Usuario");
+                        for (int i = 0; i < usuarios.getLength(); i++) {
+                            Element usuario = (Element) usuarios.item(i);
+                           if (usuario.getAttribute("nombre").equalsIgnoreCase(usuarioActual.getNombre())){
+                               Element nuevoSeguido = documento.createElement("UsuarioSeguido");
+                               nuevoSeguido.setAttribute("nombre", nombrePersona);
+                           }
+                        }
+                    }
+                    break;
+                case 2:
+                    System.out.println("Escribe el titulo del post a crear");
+                    String titulo = scanner.nextLine();
+                    Date fecha = new Date();
+                    Post post = new Post(fecha, titulo);
+                    usuarioActual.añadirPost(post);
+                    NodeList usuarios = documento.getElementsByTagName("Usuario");
+                    for (int i = 0; i < usuarios.getLength(); i++) {
+                        Element usuario = (Element) usuarios.item(i);
+                        if (usuario.getAttribute("nombre").equalsIgnoreCase(usuarioActual.getNombre())){
+                            Element nuevoSeguido = documento.createElement("UsuarioSeguido");
+                           // nuevoSeguido.setAttribute("nombre", nombrePersona);
+                        }
+                    }
+                    break;
+                case 3:
+                    System.out.println("Saliendo");
+                    menuPrincipal();
+                    break;
+            }
+
+        } while (opcion != 3);
+    }
+
+    private static void menuEliminar() {
+        System.out.println("Menu eliminar++++++++++++");
     }
 
     private static Date fechaFormateada(String fecha) {
