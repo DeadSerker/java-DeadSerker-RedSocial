@@ -67,7 +67,7 @@ public class Usuario {
 
     public void listarMisPosts(){
         for (Post post : this.posts) {
-            System.out.printf("Titulo: %S\n",post.getTitulo());
+            System.out.printf("Titulo: %S, ID del post: %S\n",post.getTitulo(),post.getIdPost());
         }
     }
     public void listarMisComentarios(){

@@ -7,6 +7,7 @@ public class Post {
         Fecha = fecha;
         this.comentarios = new ArrayList<>();
         this.titulo = titulo;
+        this.idPost="-1";
     }
     public Post(){}
 
@@ -37,6 +38,16 @@ public class Post {
     private Date Fecha;
     private List<Comentario> comentarios;
     private String titulo;
+
+    public String getIdPost() {
+        return idPost;
+    }
+
+    public void setIdPost(String idPost) {
+        this.idPost = idPost;
+    }
+
+    private String idPost;
 
     public void añadirComentario(Comentario comentario){
         comentarios.add(comentario);
