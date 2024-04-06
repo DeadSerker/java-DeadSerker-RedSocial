@@ -2,6 +2,7 @@ import jdk.dynalink.beans.StaticClass;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.swing.text.ElementIterator;
 import javax.xml.crypto.Data;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,7 +30,7 @@ public class Main {
     private static int indice;
     private static Element elementUsuarioActual;
     private static Element elementPostActual;
-    private static Map<String,List<Comentario>> comentariosAplicacion;
+    private static Map<String, List<Comentario>> comentariosAplicacion;
 
     public static void main(String[] args) {
         usuariosAplicacion = new ArrayList<>();
@@ -46,7 +47,7 @@ public class Main {
         }
         System.out.println("Bienvenido a CanelonesTwich");
         if (nueva) {
-            if (usuarioSiNoQuestion("Actualmente no hay usuarios, registrase?\n-Si\n-No")){
+            if (usuarioSiNoQuestion("Actualmente no hay usuarios, registrase?\n-Si\n-No")) {
                 System.out.println("Introduce tu nombre");
                 String nombre = scanner.nextLine();
                 registrarUsuario(nombre);
@@ -60,14 +61,14 @@ public class Main {
                 cargarUsuarios();
                 System.out.println("Introduce tu nombre para iniciar sesion");
                 String nombre = scanner.nextLine();
-                if (inicioSesion(nombre));
+                if (inicioSesion(nombre)) ;
                 else {
-                    if (usuarioSiNoQuestion("¿No se encuentra el usuario, quieres registrate? (Si/No)")){
+                    if (usuarioSiNoQuestion("¿No se encuentra el usuario, quieres registrate? (Si/No)")) {
                         registrarUsuario(nombre);
                         System.out.println("Usuario registrado correctamente");
                         cargarUsuarios();
                         inicioSesion(nombre);
-                    }else System.out.println("Saliendo...");
+                    } else System.out.println("Saliendo...");
                 }
 
             } catch (XPathExpressionException e) {
@@ -81,7 +82,10 @@ public class Main {
         NodeList posts = documento.getElementsByTagName("Post");
         for (int i = 0; i < posts.getLength(); i++) {
             Element post = (Element) posts.item(i);
-            System.out.printf("Titulo del post: %S\nID: %S", post.getAttribute("titulo"), post.getAttribute("idPost"));
+            System.out.printf("Titulo del post: %S\nID: %S\nFecha: %S\n"
+                    , post.getAttribute("titulo")
+                    , post.getAttribute("idPost")
+                    ,post.getAttribute("fecha"));
         }
 
     }
@@ -101,41 +105,42 @@ public class Main {
                 inicioCorrecto = true;
                 usuarioActual = new Usuario(nombre);
                 //Cargo los seguidos
-                Element usuariosSeguidos =(Element) elementUsuarioActual.getElementsByTagName("UsuariosSeguidos").item(0);
+                Element usuariosSeguidos = (Element) elementUsuarioActual.getElementsByTagName("UsuariosSeguidos").item(0);
 
                 if (usuariosSeguidos != null) {
                     NodeList usuariosSeguidosList = usuariosSeguidos.getElementsByTagName("UsuarioSeguido");
                     List<String> usuariosSeguidosAux = new ArrayList<>();
                     for (int j = 0; j < usuariosSeguidosList.getLength(); j++) {
                         Element usuarioSeguido = (Element) usuariosSeguidosList.item(j);
-                        if (usuarioSeguido!=null){
+                        if (usuarioSeguido != null) {
                             String nomUsuario = usuarioSeguido.getAttribute("nombre");
-                            if (!usuariosSeguidosAux.contains(nomUsuario))usuariosSeguidosAux.add(nomUsuario);
+                            if (!usuariosSeguidosAux.contains(nomUsuario)) usuariosSeguidosAux.add(nomUsuario);
                         }
                     }
                     usuarioActual.setUsuariosSeguidos(usuariosSeguidosAux);
                 }
 
-                Element postPropios = (Element)elementUsuarioActual.getElementsByTagName("Posts").item(0);
+                Element postPropios = (Element) elementUsuarioActual.getElementsByTagName("Posts").item(0);
                 if (postPropios != null) {
                     NodeList postPropiosList = postPropios.getChildNodes();
+                    List<Post>potsUserAux = new ArrayList<>();
                     for (int j = 0; j < postPropiosList.getLength(); j++) {
-                        Element postElement = (Element)postPropiosList.item(i);
+                        Element postElement = (Element) postPropiosList.item(i);
                         Post post = new Post();
                         post.setTitulo(postElement.getAttribute("titulo"));
                         post.setFecha(fechaFormateada(postElement.getAttribute("fecha")));
                         NodeList comentarios = postElement.getElementsByTagName("Comentario");
                         List<Comentario> comentariosUsuario = new ArrayList<>();
-                        for (int k = 0; k <comentarios.getLength() ; k++) {
+                        for (int k = 0; k < comentarios.getLength(); k++) {
                             Element comentarioElement = (Element) comentarios.item(k);
                             comentariosUsuario.add(new Comentario(comentarioElement.getTextContent()
-                                    ,fechaFormateada(comentarioElement.getAttribute("fecha"))
-                                    ,new Usuario(comentarioElement.getAttribute("usuario"))));
+                                    , fechaFormateada(comentarioElement.getAttribute("fecha"))
+                                    , new Usuario(comentarioElement.getAttribute("usuario"))));
                         }
                         post.setComentarios(comentariosUsuario);
-                        //Faltan los comentarios--------------------
-
+                        potsUserAux.add(post);
                     }
+                    usuarioActual.setPosts(potsUserAux);
                 }
                 break;
             } else inicioCorrecto = false;
@@ -207,8 +212,8 @@ public class Main {
                     menuEliminar();
                     break;
                 case 7:
-                    System.out.println("Que quieres eliminar?");
-                    menuEliminar();
+                    ///////////////////////////////////
+
                     break;
                 case 8:
                     System.out.println("Saliendo...");
@@ -233,6 +238,7 @@ public class Main {
                     System.out.println("A quien quieres seguir?");
                     String nombrePersona = scanner.nextLine();
                     boolean existe = false;
+                    boolean soyYo = false;
                     try {
                         cargarUsuarios();
                     } catch (XPathExpressionException e) {
@@ -241,54 +247,54 @@ public class Main {
                     for (Usuario usuario : usuariosAplicacion) {
                         if (usuario.getNombre().equalsIgnoreCase(nombrePersona)) {
                             existe = true;
+                            if (nombrePersona.equalsIgnoreCase(usuarioActual.getNombre())) soyYo=true;
+                            else soyYo=false;
                             break;
                         } else {
                             existe = false;
                         }
                     }
-                    if (existe) {
+                    if (existe && !soyYo) {
                         usuarioActual.seguirUsuario(nombrePersona);
                         Element nuevoSeguido = documento.createElement("UsuarioSeguido");
                         nuevoSeguido.setAttribute("nombre", nombrePersona);
                         elementUsuarioActual.getElementsByTagName("UsuariosSeguidos").item(0).appendChild(nuevoSeguido);
                         trasformerAux();
-                    } else System.out.println("El usuario que buscas no existe");
+                    } else System.out.println("El usuario que buscas no existe o eres tu mismo rufian");
                     break;
                 case 2:
                     System.out.println("Escribe el titulo del post a crear");
                     String titulo = scanner.nextLine();
                     Date fecha = new Date();
                     Post post = new Post(fecha, titulo);
+                    //NodeList posts = elementUsuarioActual.getElementsByTagName("Posts");
                     NodeList posts = documento.getElementsByTagName("Post");
-                    Element ultimoPost = (Element) posts.item(posts.getLength()-1);
-                    String actualPostID;
-                    try {
-                        actualPostID = (Integer.parseInt(ultimoPost.getAttribute("idPost"))+1)+"";
-                    }catch (NumberFormatException e){
-                        actualPostID = "-1";
+                    String actualPostID = "0";
+                    if (posts.getLength()!=0){
+                        Element ultimoPost = (Element) posts.item(posts.getLength() - 1);
+                        actualPostID = (Integer.parseInt(ultimoPost.getAttribute("idPost")) + 1) + "";
                     }
+
                     post.setIdPost(actualPostID);
                     Comentario comentario;
+                    Element raizPosts = (Element) elementUsuarioActual.getElementsByTagName("Posts").item(0);
                     Element nuevoPost = documento.createElement("Post");
-                    Element postsElemetes = documento.createElement("Posts");
-                    if (usuarioSiNoQuestion("¿Quieres añadir un primer comentario?")){
+                    if (usuarioSiNoQuestion("¿Quieres añadir un primer comentario? (Si/No)")) {
                         //Quiere añadir un comentario
                         System.out.println("Introduce el comentario: -->");
-                        String texto =scanner.nextLine();
-                        comentario = new Comentario(texto,fecha,usuarioActual);
+                        String texto = scanner.nextLine();
+                        comentario = new Comentario(texto, fecha, usuarioActual);
                         Element comentarioElement = documento.createElement("Comentario");
                         comentarioElement.setAttribute("usuario", usuarioActual.getNombre());
                         comentarioElement.setAttribute("fecha", fecha.toString());
                         comentarioElement.setTextContent(texto);
-                        postsElemetes.appendChild(comentarioElement);
+                        nuevoPost.appendChild(comentarioElement);
                         System.out.println("Comentario añadido");
                     }
-                    nuevoPost.appendChild(postsElemetes);
                     nuevoPost.setAttribute("titulo", titulo);
                     nuevoPost.setAttribute("fecha", fecha.toString());
                     nuevoPost.setAttribute("idPost", actualPostID);
-
-                    elementUsuarioActual.appendChild(nuevoPost);
+                    raizPosts.appendChild(nuevoPost);
                     usuarioActual.añadirPost(post);
                     trasformerAux();
 
@@ -304,15 +310,16 @@ public class Main {
         } while (opcion != 3);
     }
 
-    private static boolean usuarioSiNoQuestion(String mensaje){
+    private static boolean usuarioSiNoQuestion(String mensaje) {
         String respuesta;
         do {
             System.out.println(mensaje);
             respuesta = scanner.nextLine();
-        }while (!(respuesta.equalsIgnoreCase("si")||respuesta.equalsIgnoreCase("no")));
+        } while (!(respuesta.equalsIgnoreCase("si") || respuesta.equalsIgnoreCase("no")));
         if (respuesta.equalsIgnoreCase("si")) return true;
         else return false;
     }
+
     private static void menuEliminar() {
         System.out.println("Menu eliminar++++++++++++");
     }

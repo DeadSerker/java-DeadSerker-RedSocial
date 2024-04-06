@@ -1,15 +1,19 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<RedSocial>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><RedSocial>
     <Usuarios>
-        <Usuario nombre="Cesar">
+        <Usuario nombre="Goku">
             <UsuariosSeguidos/>
             <Posts/>
         </Usuario>
-        <Usuario nombre="Goku">
+        <Usuario nombre="Vegeta">
             <UsuariosSeguidos>
-                <UsuarioSeguido nombre="Cesar"/>
+                <UsuarioSeguido nombre="Vegeta"/>
             </UsuariosSeguidos>
-            <Posts/>
+            <Posts>
+                <Post fecha="Sat Apr 06 03:29:24 CEST 2024" idPost="0" titulo="Que solo estoy">
+                    <Comentario fecha="Sat Apr 06 03:29:24 CEST 2024" usuario="Vegeta">Echo de menos a bulma
+                    </Comentario>
+                </Post>
+            </Posts>
         </Usuario>
-    </Usuarios>
+    <Usuario nombre="cesar"><UsuariosSeguidos><UsuarioSeguido nombre="goku"/><UsuarioSeguido nombre="vegeta"/></UsuariosSeguidos><Posts><Post fecha="Sat Apr 06 03:36:50 CEST 2024" idPost="1" titulo="Porque"><Comentario fecha="Sat Apr 06 03:36:50 CEST 2024" usuario="cesar">Porque todo es tan dificil meu</Comentario></Post></Posts></Usuario></Usuarios>
 </RedSocial>
