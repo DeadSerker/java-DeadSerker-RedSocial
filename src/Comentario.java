@@ -1,8 +1,9 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Comentario {
-    public Comentario(String texto, LocalDateTime fecha, Usuario usuario) {
+    public Comentario(String texto, LocalDate fecha, Usuario usuario) {
         this.texto = texto;
         this.fecha = fecha;
         this.usuario = usuario;
@@ -16,11 +17,11 @@ public class Comentario {
         this.texto = texto;
     }
 
-    public LocalDateTime getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDateTime fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
@@ -33,6 +34,6 @@ public class Comentario {
     }
 
     private String texto;
-    private LocalDateTime fecha;
+    private LocalDate fecha;
     private Usuario usuario;
 }

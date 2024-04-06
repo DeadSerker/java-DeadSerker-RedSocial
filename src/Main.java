@@ -1,9 +1,7 @@
-import jdk.dynalink.beans.StaticClass;
+
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
-import javax.swing.text.ElementIterator;
-import javax.xml.crypto.Data;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,10 +14,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLOutput;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -33,13 +28,11 @@ public class Main {
     private static Element elementUsuarioActual;
     private static Element elementPostActual;
     private static List<String> comentariosPostActual;
-    private static Map<String, List<Comentario>> comentariosAplicacion;
 
     public static void main(String[] args) {
         usuariosAplicacion = new ArrayList<>();
         postAplicacion = new ArrayList<>();
         indice = 0;
-        comentariosAplicacion = new HashMap<>();
         elementPostActual = null;
         comentariosPostActual = new ArrayList<>();
         boolean nueva = false;
@@ -231,6 +224,7 @@ public class Main {
     }
     private static void entrarEnPost(String idPost){
         elementPostActual = null;
+        comentariosPostActual.clear();
         NodeList posts = documento.getElementsByTagName("Post");
         for (int i = 0; i < posts.getLength(); i++) {
             Element post = (Element) posts.item(i);
@@ -240,13 +234,53 @@ public class Main {
             }
         }
         if (elementPostActual!=null){
+            //Dentro del post
             System.out.println("Entrando en el post: "+elementPostActual.getAttribute("titulo"));
             System.out.println("Comentarios: ");
             separadorCustom();
             NodeList comentariosListNodes = elementPostActual.getElementsByTagName("Comentario");
+            for (int i = 0; i < comentariosListNodes.getLength(); i++) {
+                Element comentarioElement = (Element) comentariosListNodes.item(i);
+                String comentarioPreparado = formatoParaComentario(comentarioElement.getAttribute("usuario")
+                        ,comentarioElement.getAttribute("fecha"),comentarioElement.getTextContent());
+                comentariosPostActual.add(comentarioPreparado);
+            }
+            for (String s : comentariosPostActual) {
+                System.out.println(s);
+            }
+            String opcion = "";
+            do {
+                System.out.println("Esperando comentarios (--SALIR para salir del post)");
+                opcion = scanner.nextLine();
+                if (!opcion.equalsIgnoreCase("--SALIR")){
+                    Element comentarioNuevo = documento.createElement("Comentario");
+                    comentarioNuevo.setAttribute("fecha", fechaActualFormateada().toString());
+                    comentarioNuevo.setAttribute("usuario", usuarioActual.getNombre());
+                    comentarioNuevo.setTextContent(opcion);
+                    elementPostActual.appendChild(comentarioNuevo);
+                    trasformerAux();
+                    cargarXML();
+                    System.out.println(opcion);
+                    separadorCustom();
+                }else System.out.println("Saliendo del post "+elementPostActual.getAttribute("titulo"));
 
+            }while (!opcion.equalsIgnoreCase("--SALIR"));
         }else System.out.println("No se encuentra ningun post con ese id");
 
+    }
+    private static LocalDate fechaActualFormateada(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String fechaFormateada = LocalDate.now().format(formatter);
+        LocalDate fecha = LocalDate.parse(fechaFormateada, formatter);
+        return fecha;
+    }
+    private static String formatoParaComentario(String usuario,String fecha,String contenido){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Comentario de ")
+                .append(usuario).append("\n\n")
+                .append(contenido).append("\n\n")
+                .append(fecha);
+        return stringBuilder.toString();
     }
     private static void menuCrear() {
         int opcion;
@@ -292,9 +326,9 @@ public class Main {
                 case 2:
                     System.out.println("Escribe el titulo del post a crear");
                     String titulo = scanner.nextLine();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-                    String fechaFormateada = LocalDateTime.now().format(formatter);
-                    LocalDateTime fecha = LocalDateTime.parse(fechaFormateada, formatter);
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    String fechaFormateada = LocalDate.now().format(formatter);
+                    LocalDate fecha = LocalDate.parse(fechaFormateada, formatter);
 
                     Post post = new Post(fecha, titulo);
                     //NodeList posts = elementUsuarioActual.getElementsByTagName("Posts");
@@ -320,6 +354,7 @@ public class Main {
                         comentarioElement.setTextContent(texto);
                         nuevoPost.appendChild(comentarioElement);
                         System.out.println("Comentario añadido");
+                        post.añadirComentario(comentario);
                     }
                     nuevoPost.setAttribute("titulo", titulo);
                     nuevoPost.setAttribute("fecha", post.getFecha().toString());
@@ -458,9 +493,9 @@ public class Main {
     private static void separadorCustom(){
         System.out.println("+++++<-------->+++++");
     }
-    public static LocalDateTime fechaFormateada(String fecha) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        return LocalDateTime.parse(fecha, formatter);
+    public static LocalDate fechaFormateada(String fecha) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(fecha, formatter);
     }
 
     private static void registrarUsuario(String nombre) {

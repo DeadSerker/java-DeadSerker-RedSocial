@@ -1,14 +1,15 @@
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Post {
-    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 
-    public Post(LocalDateTime fecha, String titulo) {
+    public Post(LocalDate fecha, String titulo) {
         Fecha = fecha;
         this.comentarios = new ArrayList<>();
         this.titulo = titulo;
@@ -18,11 +19,11 @@ public class Post {
     public Post() {
     }
 
-    public LocalDateTime getFecha() {
+    public LocalDate getFecha() {
         return Fecha;
     }
 
-    public void setFecha(LocalDateTime fecha) {
+    public void setFecha(LocalDate fecha) {
         Fecha = fecha;
 
     }
@@ -43,7 +44,7 @@ public class Post {
         this.titulo = titulo;
     }
 
-    private LocalDateTime Fecha;
+    private LocalDate Fecha;
     private List<Comentario> comentarios;
     private String titulo;
 
@@ -59,7 +60,6 @@ public class Post {
 
     public void añadirComentario(Comentario comentario) {
         comentarios.add(comentario);
-        System.out.println("Comentario añadido\n");
     }
 
     public void eliminarComentario(Comentario comentario) {

@@ -1,25 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<RedSocial>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><RedSocial>
     <Usuarios>
         <Usuario nombre="cesar">
-            <UsuariosSeguidos>
-                <UsuarioSeguido nombre="goku"/>
-            </UsuariosSeguidos>
-            <Posts>
-                <Post fecha="2024-04-06T05:35:34" idPost="2" titulo="asdasd">
-                    <Comentario fecha="2024-04-06T05:35:34" usuario="cesar">asdasd</Comentario>
-                </Post>
-            </Posts>
-        </Usuario>
-        <Usuario nombre="Goku">
-            <UsuariosSeguidos>
-                <UsuarioSeguido nombre="cesar"/>
-            </UsuariosSeguidos>
-            <Posts>
-                <Post fecha="2024-04-06T05:05:43" idPost="1" titulo="FFX2 mola">
-                    <Comentario fecha="2024-04-06T05:05:43" usuario="Goku">No se, mola</Comentario>
-                </Post>
-            </Posts>
+            <UsuariosSeguidos/>
+            <Posts><Post fecha="2024-04-06" idPost="0" titulo="No se"><Comentario fecha="2024-04-06" usuario="cesar">Que deberia saber...</Comentario><Comentario fecha="2024-04-06" usuario="cesar">Estas bien bro?</Comentario></Post><Post fecha="2024-04-06" idPost="1" titulo="Segundo post"><Comentario fecha="2024-04-06" usuario="cesar">leche</Comentario></Post></Posts>
         </Usuario>
     </Usuarios>
 </RedSocial>

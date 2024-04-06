@@ -1,8 +1,9 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 public class ImagenPost extends Post {
-    public ImagenPost(LocalDateTime fecha, String titulo, String dimensiones) {
+    public ImagenPost(LocalDate fecha, String titulo, String dimensiones) {
         super(fecha, titulo);
         this.dimensiones = dimensiones;
     }
