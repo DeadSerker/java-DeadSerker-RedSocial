@@ -1,19 +1,25 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><RedSocial>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<RedSocial>
     <Usuarios>
-        <Usuario nombre="Goku">
-            <UsuariosSeguidos/>
-            <Posts/>
-        </Usuario>
-        <Usuario nombre="Vegeta">
+        <Usuario nombre="cesar">
             <UsuariosSeguidos>
-                <UsuarioSeguido nombre="Vegeta"/>
+                <UsuarioSeguido nombre="goku"/>
             </UsuariosSeguidos>
             <Posts>
-                <Post fecha="Sat Apr 06 03:29:24 CEST 2024" idPost="0" titulo="Que solo estoy">
-                    <Comentario fecha="Sat Apr 06 03:29:24 CEST 2024" usuario="Vegeta">Echo de menos a bulma
-                    </Comentario>
+                <Post fecha="2024-04-06T05:35:34" idPost="2" titulo="asdasd">
+                    <Comentario fecha="2024-04-06T05:35:34" usuario="cesar">asdasd</Comentario>
                 </Post>
             </Posts>
         </Usuario>
-    <Usuario nombre="cesar"><UsuariosSeguidos><UsuarioSeguido nombre="goku"/><UsuarioSeguido nombre="vegeta"/></UsuariosSeguidos><Posts><Post fecha="Sat Apr 06 03:36:50 CEST 2024" idPost="1" titulo="Porque"><Comentario fecha="Sat Apr 06 03:36:50 CEST 2024" usuario="cesar">Porque todo es tan dificil meu</Comentario></Post></Posts></Usuario></Usuarios>
+        <Usuario nombre="Goku">
+            <UsuariosSeguidos>
+                <UsuarioSeguido nombre="cesar"/>
+            </UsuariosSeguidos>
+            <Posts>
+                <Post fecha="2024-04-06T05:05:43" idPost="1" titulo="FFX2 mola">
+                    <Comentario fecha="2024-04-06T05:05:43" usuario="Goku">No se, mola</Comentario>
+                </Post>
+            </Posts>
+        </Usuario>
+    </Usuarios>
 </RedSocial>

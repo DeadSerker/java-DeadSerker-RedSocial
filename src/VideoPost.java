@@ -1,7 +1,8 @@
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class VideoPost extends Post{
-    public VideoPost(Date fecha, String titulo, String calidad, double duracionSeg) {
+    public VideoPost(LocalDateTime fecha, String titulo, String calidad, double duracionSeg) {
         super(fecha, titulo);
         this.calidad = calidad;
         this.duracionSeg = duracionSeg;

@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
@@ -30,6 +32,7 @@ public class Main {
     private static int indice;
     private static Element elementUsuarioActual;
     private static Element elementPostActual;
+    private static List<String> comentariosPostActual;
     private static Map<String, List<Comentario>> comentariosAplicacion;
 
     public static void main(String[] args) {
@@ -37,6 +40,8 @@ public class Main {
         postAplicacion = new ArrayList<>();
         indice = 0;
         comentariosAplicacion = new HashMap<>();
+        elementPostActual = null;
+        comentariosPostActual = new ArrayList<>();
         boolean nueva = false;
         //String usuarioName = scanner.nextLine();
         if (cargarXML()) System.out.println("Datos cargados correctamente");
@@ -122,13 +127,14 @@ public class Main {
 
                 Element postPropios = (Element) elementUsuarioActual.getElementsByTagName("Posts").item(0);
                 if (postPropios != null) {
-                    NodeList postPropiosList = postPropios.getChildNodes();
+                    NodeList postPropiosList = postPropios.getElementsByTagName("Post");
                     List<Post>potsUserAux = new ArrayList<>();
                     for (int j = 0; j < postPropiosList.getLength(); j++) {
-                        Element postElement = (Element) postPropiosList.item(i);
+                        Element postElement = (Element) postPropiosList.item(j);
                         Post post = new Post();
                         post.setTitulo(postElement.getAttribute("titulo"));
                         post.setFecha(fechaFormateada(postElement.getAttribute("fecha")));
+                        post.setIdPost(postElement.getAttribute("idPost"));
                         NodeList comentarios = postElement.getElementsByTagName("Comentario");
                         List<Comentario> comentariosUsuario = new ArrayList<>();
                         for (int k = 0; k < comentarios.getLength(); k++) {
@@ -180,9 +186,7 @@ public class Main {
             switch (opcion) {
                 case 1:
                     System.out.println("Usuarios que sigues");
-                    for (String usuariosSeguido : usuarioActual.getUsuariosSeguidos()) {
-                        System.out.println(usuariosSeguido);
-                    }
+                    mostrarUsuariosSigo();
                     break;
                 case 2:
                     System.out.println("Post propios:");
@@ -213,7 +217,9 @@ public class Main {
                     break;
                 case 7:
                     ///////////////////////////////////
-
+                    System.out.println("Selecciona el id del post al que quieres entrar: ");
+                    String postId = scanner.nextLine();
+                    entrarEnPost(postId);
                     break;
                 case 8:
                     System.out.println("Saliendo...");
@@ -223,7 +229,25 @@ public class Main {
             }
         } while (opcion != 8);
     }
+    private static void entrarEnPost(String idPost){
+        elementPostActual = null;
+        NodeList posts = documento.getElementsByTagName("Post");
+        for (int i = 0; i < posts.getLength(); i++) {
+            Element post = (Element) posts.item(i);
+            if (post.getAttribute("idPost").equalsIgnoreCase(idPost)){
+                elementPostActual = post;
+                break;
+            }
+        }
+        if (elementPostActual!=null){
+            System.out.println("Entrando en el post: "+elementPostActual.getAttribute("titulo"));
+            System.out.println("Comentarios: ");
+            separadorCustom();
+            NodeList comentariosListNodes = elementPostActual.getElementsByTagName("Comentario");
 
+        }else System.out.println("No se encuentra ningun post con ese id");
+
+    }
     private static void menuCrear() {
         int opcion;
         do {
@@ -255,17 +279,23 @@ public class Main {
                         }
                     }
                     if (existe && !soyYo) {
-                        usuarioActual.seguirUsuario(nombrePersona);
-                        Element nuevoSeguido = documento.createElement("UsuarioSeguido");
-                        nuevoSeguido.setAttribute("nombre", nombrePersona);
-                        elementUsuarioActual.getElementsByTagName("UsuariosSeguidos").item(0).appendChild(nuevoSeguido);
-                        trasformerAux();
+                        if(usuarioActual.seguirUsuario(nombrePersona)){
+                            Element nuevoSeguido = documento.createElement("UsuarioSeguido");
+                            nuevoSeguido.setAttribute("nombre", nombrePersona);
+                            elementUsuarioActual.getElementsByTagName("UsuariosSeguidos").item(0).appendChild(nuevoSeguido);
+                            System.out.println("Seguiendo a "+ nombrePersona);
+                            trasformerAux();
+                        }else System.out.println("Ya sigues a este usuario");
+
                     } else System.out.println("El usuario que buscas no existe o eres tu mismo rufian");
                     break;
                 case 2:
                     System.out.println("Escribe el titulo del post a crear");
                     String titulo = scanner.nextLine();
-                    Date fecha = new Date();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                    String fechaFormateada = LocalDateTime.now().format(formatter);
+                    LocalDateTime fecha = LocalDateTime.parse(fechaFormateada, formatter);
+
                     Post post = new Post(fecha, titulo);
                     //NodeList posts = elementUsuarioActual.getElementsByTagName("Posts");
                     NodeList posts = documento.getElementsByTagName("Post");
@@ -292,7 +322,7 @@ public class Main {
                         System.out.println("Comentario añadido");
                     }
                     nuevoPost.setAttribute("titulo", titulo);
-                    nuevoPost.setAttribute("fecha", fecha.toString());
+                    nuevoPost.setAttribute("fecha", post.getFecha().toString());
                     nuevoPost.setAttribute("idPost", actualPostID);
                     raizPosts.appendChild(nuevoPost);
                     usuarioActual.añadirPost(post);
@@ -321,17 +351,116 @@ public class Main {
     }
 
     private static void menuEliminar() {
-        System.out.println("Menu eliminar++++++++++++");
-    }
+        int opcion;
+        do {
+            System.out.println("1-Dejar de seguir usuario\n2-Eliminar Post\n3-Salir");
+            try {
+                opcion = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                opcion = 6;
+            }
+            switch (opcion){
+                case 1:
+                    System.out.println("A quien quieres dejar de seguir?\nLos usuarios que sigues son:");
+                    mostrarUsuariosSigo();
+                    separadorCustom();
+                    String nombrePersona = scanner.nextLine();
+                    boolean existe = false;
+                    boolean soyYo = false;
+                    try {
+                        //No creo que sea necesario
+                        cargarUsuarios();
+                    } catch (XPathExpressionException e) {
+                        throw new RuntimeException(e);
+                    }
+                    for (String usuario : usuarioActual.getUsuariosSeguidos()) {
+                        if (usuario.equalsIgnoreCase(nombrePersona)) {
+                            existe = true;
+                            if (nombrePersona.equalsIgnoreCase(usuarioActual.getNombre())) soyYo=true;
+                            else soyYo=false;
+                            break;
+                        } else {
+                            existe = false;
+                        }
+                    }
+                    if (existe && !soyYo) {
+                        //Eliminar el usuario de seguidos
+                        StringBuilder ruta = new StringBuilder();
+                        ruta.append("//Usuario[@nombre='")
+                                .append(usuarioActual.getNombre())
+                                .append("']/UsuariosSeguidos/UsuarioSeguido[@nombre='")
+                                .append(nombrePersona).append("']");
+                        Node nodoEliminar = buscarNodoXpath(ruta.toString());
+                        try {
+                            Node nodoPadreEliminar = nodoEliminar.getParentNode();
+                            nodoPadreEliminar.removeChild(nodoEliminar);
+                            usuarioActual.dejarSeguirUsuario(nombrePersona);
+                            trasformerAux();
+                        }catch (Exception e){
+                            System.out.println("Error al eliminar el seguido");
+                        }
 
-    private static Date fechaFormateada(String fecha) {
+                    } else System.out.println("No sigues a este usuario o eres tu mismo rufian");
+                    break;
+                case 2:
+                    System.out.println("Escribe el id del post a eliminar\nTus posts son:");
+                    usuarioActual.listarMisPosts();
+                    separadorCustom();
+                    String id = "-1";
+                    try {
+                        id = scanner.nextLine();
+                    }catch (Exception e){
+                        id = "-1";
+                    }
+                    StringBuilder ruta = new StringBuilder();
+                    ruta.append("//Usuario[@nombre='")
+                            .append(usuarioActual.getNombre())
+                            .append("']/Posts/Post[@idPost='")
+                            .append(id)
+                            .append("']");
+                    Node nodoBorrar = buscarNodoXpath(ruta.toString());
+                    if (nodoBorrar!=null){
+                        Node nodoPadreEliminar = nodoBorrar.getParentNode();
+                        nodoPadreEliminar.removeChild(nodoBorrar);
+                        final String idComparar = id;
+                        usuarioActual.getPosts().removeIf(c->c.getIdPost().equalsIgnoreCase(idComparar));
+                        trasformerAux();
+
+                    }else{
+                        System.out.println("No hay nada que borrar con ese id");
+                    }
+
+                    System.out.println("Post Eliminado");
+                    break;
+                case 3:
+                    System.out.println("Saliendo");
+                    break;
+                default:
+                    System.out.println("Opcion no valida");
+            }
+        }while (opcion!=3);
+    }
+    private static Node buscarNodoXpath(String ruta){
         try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date fechaAux = format.parse(fecha);
-            return fechaAux;
-        } catch (ParseException e) {
+            XPath xpath = XPathFactory.newInstance().newXPath();
+            XPathExpression consulta = xpath.compile(ruta);
+            Node resultado = (Node)consulta.evaluate(documento,XPathConstants.NODE);
+            return resultado;
+        } catch (XPathExpressionException e) {
             throw new RuntimeException(e);
         }
+    }
+    private static void mostrarUsuariosSigo(){
+        for (String usuariosSeguido : usuarioActual.getUsuariosSeguidos()) {
+            System.out.println(usuariosSeguido);
+        }
+    }
+    private static void separadorCustom(){
+        System.out.println("+++++<-------->+++++");
+    }
+    public static LocalDateTime fechaFormateada(String fecha) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        return LocalDateTime.parse(fecha, formatter);
     }
 
     private static void registrarUsuario(String nombre) {
@@ -393,7 +522,6 @@ public class Main {
             StreamResult result = new StreamResult(new File("src/../resources/RedSocial.xml"));
             //Trasforma el archivo de source en el archivo que esta en result
             trasformer.transform(sourrce, result);
-            System.out.println("Datos XML creados");
         } catch (TransformerConfigurationException e) {
             throw new RuntimeException(e);
         } catch (TransformerException e) {

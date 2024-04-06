@@ -1,22 +1,30 @@
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Post {
-    public Post(Date fecha, String titulo) {
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    public Post(LocalDateTime fecha, String titulo) {
         Fecha = fecha;
         this.comentarios = new ArrayList<>();
         this.titulo = titulo;
-        this.idPost="-1";
+        this.idPost = "-1";
     }
-    public Post(){}
 
-    public Date getFecha() {
+    public Post() {
+    }
+
+    public LocalDateTime getFecha() {
         return Fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(LocalDateTime fecha) {
         Fecha = fecha;
+
     }
 
     public List<Comentario> getComentarios() {
@@ -35,7 +43,7 @@ public class Post {
         this.titulo = titulo;
     }
 
-    private Date Fecha;
+    private LocalDateTime Fecha;
     private List<Comentario> comentarios;
     private String titulo;
 
@@ -49,18 +57,19 @@ public class Post {
 
     private String idPost;
 
-    public void añadirComentario(Comentario comentario){
+    public void añadirComentario(Comentario comentario) {
         comentarios.add(comentario);
         System.out.println("Comentario añadido\n");
     }
-    public void eliminarComentario(Comentario comentario){
-        if (comentarios.contains(comentario)){
+
+    public void eliminarComentario(Comentario comentario) {
+        if (comentarios.contains(comentario)) {
             comentarios.remove(comentario);
             System.out.println("Comentario eliminado");
-        }else System.out.printf("El comentario no existe");
+        } else System.out.printf("El comentario no existe");
     }
 
-    public void comentariosEnPost(){
-        System.out.printf("El numero de comentarios del post %s son %s",this.titulo,this.comentarios.size());
+    public void comentariosEnPost() {
+        System.out.printf("El numero de comentarios del post %s son %s", this.titulo, this.comentarios.size());
     }
 }

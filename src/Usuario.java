@@ -39,18 +39,18 @@ public class Usuario {
 
     //Funcionalidades
 
-    public void seguirUsuario(String usuario){
-        if (usuariosSeguidos.contains(usuario)) System.out.println("Ya sigues a este usuario");
+    public boolean seguirUsuario(String usuario){
+        if (usuariosSeguidos.contains(usuario)) return false;
         else {
             usuariosSeguidos.add(usuario);
-            System.out.printf("Siguiendo a %S\n",usuario);
+            return true;
         }
     }
 
-    public void dejarSeguirUsuario(Usuario usuario){
+    public void dejarSeguirUsuario(String usuario){
         if (usuariosSeguidos.contains(usuario)){
             usuariosSeguidos.remove(usuario);
-            System.out.printf("Dejando de seguir a %S",usuario.nombre);
+            System.out.printf("Dejando de seguir a %S\n",usuario);
         }else System.out.println("No sigues a este usuario");
     }
     public void añadirPost(Post post){
