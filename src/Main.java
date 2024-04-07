@@ -274,7 +274,9 @@ public class Main {
             String nombre = comentarioElement.getAttribute("usuario");
             if (nombresUsuariosSigo.contains(nombre));
             else{
-                usuariosParaRecomendar.add(nombre.toLowerCase());
+                if (!nombre.equalsIgnoreCase(usuarioActual.getNombre())){
+                    usuariosParaRecomendar.add(nombre.toLowerCase());
+                }
             }
         }
        usuariosParaRecomendar.remove(usuarioActual.getNombre().toLowerCase());
@@ -394,6 +396,7 @@ public class Main {
             }
             switch (opcion) {
                 case 1:
+                    recomendarUsuariosALaFuerza();
                     System.out.println("A quien quieres seguir?");
                     String nombrePersona = scanner.nextLine();
                     boolean existe = false;
@@ -497,49 +500,51 @@ public class Main {
             }
             switch (opcion) {
                 case 1:
-                    System.out.println("A quien quieres dejar de seguir?\nLos usuarios que sigues son:");
+                    System.out.println("A quien quieres dejar de seguir? (Para cancelar escribe SALIR)\nLos usuarios que sigues son:");
                     mostrarUsuariosSigo();
                     separadorCustom();
                     String nombrePersona = scanner.nextLine();
-                    boolean existe = false;
-                    boolean soyYo = false;
-                    try {
-                        //No creo que sea necesario
-                        cargarUsuarios();
-                    } catch (XPathExpressionException e) {
-                        throw new RuntimeException(e);
-                    }
-                    for (String usuario : usuarioActual.getUsuariosSeguidos()) {
-                        if (usuario.equalsIgnoreCase(nombrePersona)) {
-                            existe = true;
-                            if (nombrePersona.equalsIgnoreCase(usuarioActual.getNombre())) soyYo = true;
-                            else soyYo = false;
-                            break;
-                        } else {
-                            existe = false;
-                        }
-                    }
-                    if (existe && !soyYo) {
-                        //Eliminar el usuario de seguidos
-                        StringBuilder ruta = new StringBuilder();
-                        ruta.append("//Usuario[@nombre='")
-                                .append(usuarioActual.getNombre())
-                                .append("']/UsuariosSeguidos/UsuarioSeguido[@nombre='")
-                                .append(nombrePersona).append("']");
-                        Node nodoEliminar = buscarNodoXpath(ruta.toString());
+                    if (!nombrePersona.equalsIgnoreCase("salir")){
+                        boolean existe = false;
+                        boolean soyYo = false;
                         try {
-                            Node nodoPadreEliminar = nodoEliminar.getParentNode();
-                            nodoPadreEliminar.removeChild(nodoEliminar);
-                            usuarioActual.dejarSeguirUsuario(nombrePersona);
-                            trasformerAux();
-                        } catch (Exception e) {
-                            System.out.println("Error al eliminar el seguido");
+                            //No creo que sea necesario
+                            cargarUsuarios();
+                        } catch (XPathExpressionException e) {
+                            throw new RuntimeException(e);
                         }
+                        for (String usuario : usuarioActual.getUsuariosSeguidos()) {
+                            if (usuario.equalsIgnoreCase(nombrePersona)) {
+                                existe = true;
+                                if (nombrePersona.equalsIgnoreCase(usuarioActual.getNombre())) soyYo = true;
+                                else soyYo = false;
+                                break;
+                            } else {
+                                existe = false;
+                            }
+                        }
+                        if (existe && !soyYo) {
+                            //Eliminar el usuario de seguidos
+                            StringBuilder ruta = new StringBuilder();
+                            ruta.append("//Usuario[@nombre='")
+                                    .append(usuarioActual.getNombre())
+                                    .append("']/UsuariosSeguidos/UsuarioSeguido[@nombre='")
+                                    .append(nombrePersona).append("']");
+                            Node nodoEliminar = buscarNodoXpath(ruta.toString());
+                            try {
+                                Node nodoPadreEliminar = nodoEliminar.getParentNode();
+                                nodoPadreEliminar.removeChild(nodoEliminar);
+                                usuarioActual.dejarSeguirUsuario(nombrePersona);
+                                trasformerAux();
+                            } catch (Exception e) {
+                                System.out.println("Error al eliminar el seguido");
+                            }
 
-                    } else System.out.println("No sigues a este usuario o eres tu mismo rufian");
+                        } else System.out.println("No sigues a este usuario o eres tu mismo rufian");
+                    }
                     break;
                 case 2:
-                    System.out.println("Escribe el id del post a eliminar\nTus posts son:");
+                    System.out.println("Escribe el id del post a eliminar (Escribe -1 para salir)\nTus posts son:");
                     usuarioActual.listarMisPosts();
                     separadorCustom();
                     String id;
@@ -548,25 +553,24 @@ public class Main {
                     } catch (Exception e) {
                         id = "-1";
                     }
-                    StringBuilder ruta = new StringBuilder();
-                    ruta.append("//Usuario[@nombre='")
-                            .append(usuarioActual.getNombre())
-                            .append("']/Posts/Post[@idPost='")
-                            .append(id)
-                            .append("']");
-                    Node nodoBorrar = buscarNodoXpath(ruta.toString());
-                    if (nodoBorrar != null) {
-                        Node nodoPadreEliminar = nodoBorrar.getParentNode();
-                        nodoPadreEliminar.removeChild(nodoBorrar);
-                        final String idComparar = id;
-                        usuarioActual.getPosts().removeIf(c -> c.getIdPost().equalsIgnoreCase(idComparar));
-                        trasformerAux();
+                    if (!id.equalsIgnoreCase("-1")){
+                        StringBuilder ruta = new StringBuilder();
+                        ruta.append("//Usuario[@nombre='")
+                                .append(usuarioActual.getNombre())
+                                .append("']/Posts/Post[@idPost='")
+                                .append(id)
+                                .append("']");
+                        Node nodoBorrar = buscarNodoXpath(ruta.toString());
+                        if (nodoBorrar != null) {
+                            Node nodoPadreEliminar = nodoBorrar.getParentNode();
+                            nodoPadreEliminar.removeChild(nodoBorrar);
+                            final String idComparar = id;
+                            usuarioActual.getPosts().removeIf(c -> c.getIdPost().equalsIgnoreCase(idComparar));
+                            trasformerAux();
+                            System.out.println("Post Eliminado");
+                        }else System.out.println("No hay nada que borrar con ese id");
 
-                    } else {
-                        System.out.println("No hay nada que borrar con ese id");
                     }
-
-                    System.out.println("Post Eliminado");
                     break;
                 case 3:
                     System.out.println("Saliendo");

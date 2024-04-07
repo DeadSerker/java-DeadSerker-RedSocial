@@ -8,7 +8,7 @@
                     <Comentario fecha="2024-04-06" usuario="cesar">Estas bien bro?</Comentario>
                     <Comentario fecha="2024-04-07" usuario="ada">no, no estoy bien</Comentario>
                     <Comentario fecha="2024-04-07" usuario="cesar">Hola ada, cuanto tiempo</Comentario>
-                </Post>
+                <Comentario fecha="2024-04-07" usuario="UltimaPrueba">Adios chivos</Comentario></Post>
                 <Post fecha="2024-04-06" idPost="1" titulo="Segundo post">
                     <Comentario fecha="2024-04-06" usuario="cesar">leche</Comentario>
                 </Post>
@@ -20,5 +20,48 @@
             </UsuariosSeguidos>
             <Posts/>
         </Usuario>
-    <Usuario nombre="Goku"><UsuariosSeguidos><UsuarioSeguido nombre="cesar"/></UsuariosSeguidos><Posts><Post fecha="2024-04-07" idPost="2" titulo="Post Prueba"><Comentario fecha="2024-04-07" usuario="Goku">Comentario de prueba</Comentario><Comentario fecha="2024-04-07" usuario="vegeta">Goku insectoooooo</Comentario></Post></Posts></Usuario><Usuario nombre="Vegeta"><UsuariosSeguidos/><Posts><Post fecha="2024-04-07" idPost="3" titulo="asd"><Comentario fecha="2024-04-07" usuario="Vegeta">comentario</Comentario></Post></Posts></Usuario><Usuario nombre="Gogeta"><UsuariosSeguidos/><Posts><Post fecha="2024-04-07" idPost="4" titulo="adas"><Comentario fecha="2024-04-07" usuario="Gogeta">asdasd</Comentario></Post></Posts></Usuario></Usuarios>
+        <Usuario nombre="Goku">
+            <UsuariosSeguidos>
+                <UsuarioSeguido nombre="cesar"/>
+            </UsuariosSeguidos>
+            <Posts>
+                <Post fecha="2024-04-07" idPost="2" titulo="Post Prueba">
+                    <Comentario fecha="2024-04-07" usuario="Goku">Comentario de prueba</Comentario>
+                    <Comentario fecha="2024-04-07" usuario="vegeta">Goku insectoooooo</Comentario>
+                </Post>
+            </Posts>
+        </Usuario>
+        <Usuario nombre="Vegeta">
+            <UsuariosSeguidos/>
+            <Posts>
+                <Post fecha="2024-04-07" idPost="3" titulo="asd">
+                    <Comentario fecha="2024-04-07" usuario="Vegeta">comentario</Comentario>
+                </Post>
+            </Posts>
+        </Usuario>
+        <Usuario nombre="Gogeta">
+            <UsuariosSeguidos/>
+            <Posts>
+                <Post fecha="2024-04-07" idPost="4" titulo="adas">
+                    <Comentario fecha="2024-04-07" usuario="Gogeta">asdasd</Comentario>
+                </Post>
+            </Posts>
+        </Usuario>
+        <Usuario nombre="Eren Titan">
+            <UsuariosSeguidos/>
+            <Posts>
+                <Post fecha="2024-04-07" idPost="5" titulo="Me gusta el maiz">
+                    <Comentario fecha="2024-04-07" usuario="Eren Titan">Nah mentira no me gusta</Comentario>
+                <Comentario fecha="2024-04-07" usuario="UltimaPrueba">Que pena que no te guste</Comentario></Post>
+            </Posts>
+        </Usuario>
+        <Usuario nombre="Trunks">
+            <UsuariosSeguidos/>
+            <Posts>
+                <Post fecha="2024-04-07" idPost="6" titulo="Vengo del futuro">
+                    <Comentario fecha="2024-04-07" usuario="Trunks">No lo sabias ya?</Comentario>
+                </Post>
+            </Posts>
+        </Usuario>
+    <Usuario nombre="UltimaPrueba"><UsuariosSeguidos><UsuarioSeguido nombre="Eren Titan"/></UsuariosSeguidos><Posts><Post fecha="2024-04-07" idPost="7" titulo="Ultimo Post"><Comentario fecha="2024-04-07" usuario="UltimaPrueba">Fue Divertido</Comentario></Post></Posts></Usuario></Usuarios>
 </RedSocial>
