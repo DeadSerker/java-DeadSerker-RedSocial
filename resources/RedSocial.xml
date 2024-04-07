@@ -8,7 +8,8 @@
                     <Comentario fecha="2024-04-06" usuario="cesar">Estas bien bro?</Comentario>
                     <Comentario fecha="2024-04-07" usuario="ada">no, no estoy bien</Comentario>
                     <Comentario fecha="2024-04-07" usuario="cesar">Hola ada, cuanto tiempo</Comentario>
-                <Comentario fecha="2024-04-07" usuario="UltimaPrueba">Adios chivos</Comentario></Post>
+                    <Comentario fecha="2024-04-07" usuario="UltimaPrueba">Adios chivos</Comentario>
+                </Post>
                 <Post fecha="2024-04-06" idPost="1" titulo="Segundo post">
                     <Comentario fecha="2024-04-06" usuario="cesar">leche</Comentario>
                 </Post>
@@ -52,7 +53,8 @@
             <Posts>
                 <Post fecha="2024-04-07" idPost="5" titulo="Me gusta el maiz">
                     <Comentario fecha="2024-04-07" usuario="Eren Titan">Nah mentira no me gusta</Comentario>
-                <Comentario fecha="2024-04-07" usuario="UltimaPrueba">Que pena que no te guste</Comentario></Post>
+                    <Comentario fecha="2024-04-07" usuario="UltimaPrueba">Que pena que no te guste</Comentario>
+                </Post>
             </Posts>
         </Usuario>
         <Usuario nombre="Trunks">
@@ -63,5 +65,25 @@
                 </Post>
             </Posts>
         </Usuario>
-    <Usuario nombre="UltimaPrueba"><UsuariosSeguidos><UsuarioSeguido nombre="Eren Titan"/></UsuariosSeguidos><Posts><Post fecha="2024-04-07" idPost="7" titulo="Ultimo Post"><Comentario fecha="2024-04-07" usuario="UltimaPrueba">Fue Divertido</Comentario></Post></Posts></Usuario></Usuarios>
+        <Usuario nombre="UltimaPrueba">
+            <UsuariosSeguidos>
+                <UsuarioSeguido nombre="Eren Titan"/>
+            </UsuariosSeguidos>
+            <Posts>
+                <Post fecha="2024-04-07" idPost="7" titulo="Ultimo Post">
+                    <Comentario fecha="2024-04-07" usuario="UltimaPrueba">Fue Divertido</Comentario>
+                </Post>
+            </Posts>
+        </Usuario>
+        <Usuario nombre="Muti">
+            <UsuariosSeguidos>
+                <UsuarioSeguido nombre="goku"/>
+            </UsuariosSeguidos>
+            <Posts>
+                <Post fecha="2024-04-07" idPost="9" titulo="postsito">
+                    <Comentario fecha="2024-04-07" usuario="Muti">ada mola</Comentario>
+                </Post>
+            </Posts>
+        </Usuario>
+    <Usuario nombre="Jairo"><UsuariosSeguidos><UsuarioSeguido nombre="ada"/></UsuariosSeguidos><Posts><Post fecha="2024-04-07" idPost="11" titulo="adios"><Comentario fecha="2024-04-07" usuario="Jairo">asdasd</Comentario><Comentario fecha="2024-04-07" usuario="cesar">Hola jairo como estas pana</Comentario></Post></Posts></Usuario></Usuarios>
 </RedSocial>
