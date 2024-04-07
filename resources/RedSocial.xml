@@ -2,7 +2,23 @@
     <Usuarios>
         <Usuario nombre="cesar">
             <UsuariosSeguidos/>
-            <Posts><Post fecha="2024-04-06" idPost="0" titulo="No se"><Comentario fecha="2024-04-06" usuario="cesar">Que deberia saber...</Comentario><Comentario fecha="2024-04-06" usuario="cesar">Estas bien bro?</Comentario></Post><Post fecha="2024-04-06" idPost="1" titulo="Segundo post"><Comentario fecha="2024-04-06" usuario="cesar">leche</Comentario></Post></Posts>
+            <Posts>
+                <Post fecha="2024-04-06" idPost="0" titulo="No se">
+                    <Comentario fecha="2024-04-06" usuario="cesar">Que deberia saber...</Comentario>
+                    <Comentario fecha="2024-04-06" usuario="cesar">Estas bien bro?</Comentario>
+                    <Comentario fecha="2024-04-07" usuario="ada">no, no estoy bien</Comentario>
+                    <Comentario fecha="2024-04-07" usuario="cesar">Hola ada, cuanto tiempo</Comentario>
+                </Post>
+                <Post fecha="2024-04-06" idPost="1" titulo="Segundo post">
+                    <Comentario fecha="2024-04-06" usuario="cesar">leche</Comentario>
+                </Post>
+            </Posts>
         </Usuario>
-    </Usuarios>
+        <Usuario nombre="ada">
+            <UsuariosSeguidos>
+                <UsuarioSeguido nombre="cesar"/>
+            </UsuariosSeguidos>
+            <Posts/>
+        </Usuario>
+    <Usuario nombre="Goku"><UsuariosSeguidos><UsuarioSeguido nombre="cesar"/></UsuariosSeguidos><Posts><Post fecha="2024-04-07" idPost="2" titulo="Post Prueba"><Comentario fecha="2024-04-07" usuario="Goku">Comentario de prueba</Comentario><Comentario fecha="2024-04-07" usuario="vegeta">Goku insectoooooo</Comentario></Post></Posts></Usuario><Usuario nombre="Vegeta"><UsuariosSeguidos/><Posts><Post fecha="2024-04-07" idPost="3" titulo="asd"><Comentario fecha="2024-04-07" usuario="Vegeta">comentario</Comentario></Post></Posts></Usuario><Usuario nombre="Gogeta"><UsuariosSeguidos/><Posts><Post fecha="2024-04-07" idPost="4" titulo="adas"><Comentario fecha="2024-04-07" usuario="Gogeta">asdasd</Comentario></Post></Posts></Usuario></Usuarios>
 </RedSocial>
